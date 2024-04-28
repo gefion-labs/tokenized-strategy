@@ -76,7 +76,13 @@ contract Setup is ExtendedTest, IEvents {
     function setUpStrategy() public returns (address) {
         // we save the mock base strategy as a IMockStrategy to give it the needed interface
         IMockStrategy _strategy = IMockStrategy(
-            address(new MockStrategy(address(asset), address(yieldSource)))
+            address(
+                new MockStrategy(
+                    address(tokenizedStrategy),
+                    address(asset),
+                    address(yieldSource)
+                )
+            )
         );
 
         // set keeper
@@ -97,7 +103,11 @@ contract Setup is ExtendedTest, IEvents {
     function setUpIlliquidStrategy() public returns (address) {
         IMockStrategy _strategy = IMockStrategy(
             address(
-                new MockIlliquidStrategy(address(asset), address(yieldSource))
+                new MockIlliquidStrategy(
+                    address(tokenizedStrategy),
+                    address(asset),
+                    address(yieldSource)
+                )
             )
         );
 
@@ -119,7 +129,11 @@ contract Setup is ExtendedTest, IEvents {
     function setUpFaultyStrategy() public returns (address) {
         IMockStrategy _strategy = IMockStrategy(
             address(
-                new MockFaultyStrategy(address(asset), address(yieldSource))
+                new MockFaultyStrategy(
+                    address(tokenizedStrategy),
+                    address(asset),
+                    address(yieldSource)
+                )
             )
         );
 
