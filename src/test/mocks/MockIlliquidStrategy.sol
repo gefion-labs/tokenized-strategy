@@ -10,10 +10,10 @@ contract MockIlliquidStrategy is BaseStrategy {
     mapping(address => bool) public allowed;
 
     constructor(
-        address _tokenizedStrategyAddress,
+        address _tokenizedStrategy,
         address _asset,
         address _yieldSource
-    ) BaseStrategy(_tokenizedStrategyAddress, _asset, "Test Strategy") {
+    ) BaseStrategy(_tokenizedStrategy, _asset, "Test Strategy") {
         yieldSource = _yieldSource;
         ERC20(_asset).approve(_yieldSource, type(uint256).max);
     }

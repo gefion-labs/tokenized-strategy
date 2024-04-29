@@ -98,7 +98,7 @@ abstract contract BaseStrategy {
      * and always be checked before any integration with the Strategy.
      */
     // NOTE: This is a holder address based on expected deterministic location for testing
-    address public immutable tokenizedStrategyAddress;
+    address public immutable tokenizedStrategy;
 
     /*//////////////////////////////////////////////////////////////
                             IMMUTABLES
@@ -136,11 +136,11 @@ abstract contract BaseStrategy {
      * @param _name Name the strategy will use.
      */
     constructor(
-        address _tokenizedStrategyAddress,
+        address _tokenizedStrategy,
         address _asset,
         string memory _name
     ) {
-        tokenizedStrategyAddress = _tokenizedStrategyAddress;
+        tokenizedStrategy = _tokenizedStrategy;
         asset = ERC20(_asset);
 
         // Set instance of the implementation for internal use.
@@ -154,14 +154,14 @@ abstract contract BaseStrategy {
             )
         );
 
-        // Store the tokenizedStrategyAddress at the standard implementation
+        // Store the tokenizedStrategy at the standard implementation
         // address storage slot so etherscan picks up the interface. This gets
         // stored on initialization and never updated.
         assembly {
             sstore(
                 // keccak256('eip1967.proxy.implementation' - 1)
                 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc,
-                _tokenizedStrategyAddress
+                _tokenizedStrategy
             )
         }
     }
@@ -459,8 +459,9 @@ abstract contract BaseStrategy {
         bytes memory _calldata
     ) internal returns (bytes memory) {
         // Delegate call the tokenized strategy with provided calldata.
-        (bool success, bytes memory result) = tokenizedStrategyAddress
-            .delegatecall(_calldata);
+        (bool success, bytes memory result) = tokenizedStrategy.delegatecall(
+            _calldata
+        );
 
         // If the call reverted. Return the error.
         if (!success) {
@@ -489,7 +490,7 @@ abstract contract BaseStrategy {
      */
     fallback() external {
         // load our target address
-        address _tokenizedStrategyAddress = tokenizedStrategyAddress;
+        address _tokenizedStrategy = tokenizedStrategy;
         // Execute external function using delegatecall and return any value.
         assembly {
             // Copy function selector and any arguments.
@@ -497,7 +498,7 @@ abstract contract BaseStrategy {
             // Execute function delegatecall.
             let result := delegatecall(
                 gas(),
-                _tokenizedStrategyAddress,
+                _tokenizedStrategy,
                 0,
                 calldatasize(),
                 0,
